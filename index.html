@@ -33,7 +33,12 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"
 
 /* home */
 .brand{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px 0 4px}
-.hll{margin:0;font-family:"Black Ops One",Impact,"Arial Black",sans-serif;font-weight:400;font-size:clamp(72px,30vw,128px);line-height:1;letter-spacing:.1em;padding:.08em .2em .02em .3em;color:#1a1400;border-radius:14px;text-transform:uppercase;background:#f2c40d;box-shadow:inset 0 0 0 1px rgba(74,54,0,.55),inset 0 -3px 5px rgba(74,54,0,.25)}
+.ttl{margin:0;font-family:"Black Ops One",Impact,"Arial Black","Arial Narrow",sans-serif;font-weight:400;font-size:clamp(22px,7.6vw,32px);line-height:1.1;letter-spacing:.06em;text-transform:uppercase;text-align:center;white-space:nowrap;color:var(--ink)}
+.emb{display:block;flex:0 1 auto;min-height:0;height:clamp(48px,13vh,112px);width:auto;aspect-ratio:1}
+@keyframes ttlglow{0%,100%{text-shadow:0 0 4px rgba(255,70,50,.25),0 0 12px rgba(220,30,20,.15)}50%{text-shadow:0 0 6px rgba(255,80,60,.95),0 0 18px rgba(235,40,30,.8),0 0 36px rgba(200,20,15,.55)}}
+.ttl{animation:ttlglow 3.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.ttl{animation:none;text-shadow:0 0 8px rgba(255,70,50,.6),0 0 20px rgba(220,30,20,.4)}}
+.tag{margin:0;padding-left:.3em;font-size:12px;line-height:1.2;letter-spacing:.3em;text-transform:uppercase;text-align:center;color:var(--mute)}
 .sub{font-size:11px;letter-spacing:.2em;color:var(--mute);text-align:center}
 .menu{flex:0 0 auto;display:flex;flex-direction:column;gap:10px;padding:14px 0}
 .big{flex:0 0 auto;height:clamp(76px,15vh,132px);display:flex;align-items:center;gap:14px;padding:0 16px;appearance:none;-webkit-appearance:none;background-color:var(--panel);background-image:repeating-linear-gradient(135deg,rgba(225,230,236,.05) 0 1px,transparent 1px 5px);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:14px;color:var(--ink);text-decoration:none;font:inherit;text-align:left;cursor:pointer;touch-action:manipulation;transition:background-color .15s,transform .1s}
@@ -342,10 +347,41 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
 .fine{flex:0 0 auto;margin:0;padding:2px 12px 10px;font-size:10px;line-height:1.45;letter-spacing:.04em;color:var(--mute);text-align:center;text-wrap:balance}
 @media (orientation:landscape) and (max-height:520px){
 #v-home .brand{padding:8px 0 0}
-#v-home .hll{font-size:clamp(34px,15vh,58px)}
+#v-home .brand{gap:6px}
+#v-home .ttl{font-size:clamp(20px,7vh,26px)}
+#v-home .emb{height:clamp(28px,11vh,44px)}
+#v-home .tag{font-size:10px}
 #v-home .menu{gap:6px;padding:8px 0}
 #v-home .big{height:clamp(48px,16vh,64px)}
 }
+/* push-to-talk-only Artillery: card, last three shots, then TALK (half the old size, pinned to the bottom) */
+#v-art{--rh:36px;--rg:6px}
+#v-art .app{gap:8px}
+#v-art #p-stat.show{flex:0 0 auto}
+#v-art .shots{flex:0 0 auto;display:flex;flex-direction:column;gap:2px}
+#v-art .slist{flex:0 0 auto;height:calc(var(--rh)*3 + var(--rg)*2 + 6px);gap:var(--rg);overflow:hidden;touch-action:auto}
+#v-art .sr{height:var(--rh)}
+#v-art .tz{position:relative;flex:1 1 0;min-height:72px}
+#v-art .app .tlk{position:absolute;left:0;right:0;bottom:0;width:auto;height:calc(50% + 10px);min-height:72px;max-height:280px;margin:0;font-size:clamp(22px,3.6vh,32px);letter-spacing:.3em}
+#v-art .disp{padding:10px 14px}
+#v-art .dist{font-size:36px}
+#v-art .mil{font-size:62px}
+@media (max-height:700px){#v-art{--rh:32px;--rg:5px}#v-art .app{gap:6px}#v-art .dist{font-size:30px}#v-art .mil{font-size:52px}#v-art .disp{padding:8px 13px}#v-art .fac .chip{height:36px}#v-art .hd{min-height:44px}#v-art .shint{height:24px}}
+@media (max-height:600px){#v-art{--rh:28px;--rg:4px}#v-art .mil{font-size:44px}#v-art .dist{font-size:26px}#v-art .sl{font-size:17px}#v-art .sl b{font-size:19px}#v-art .disp{padding:6px 12px}#v-art .hd{min-height:40px}#v-art h1{font-size:21px}}
+#v-art .tlk.on{box-shadow:0 0 0 2px rgba(255,216,74,.5),0 0 18px rgba(255,90,70,.45)}
+#v-art #fac{display:none}
+#v-art .flagbox{position:relative;display:inline-block;flex:0 0 auto;height:1.2em;border-radius:8px;overflow:hidden;line-height:0}
+#v-art .flagbox svg{display:block;height:100%;width:auto}
+#v-art .flagbox::after{content:"";position:absolute;inset:0;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+@keyframes a-fl{from{transform:translateX(14px);opacity:.3}to{transform:none;opacity:1}}
+@keyframes a-fr{from{transform:translateX(-14px);opacity:.3}to{transform:none;opacity:1}}
+#v-art .flagbox.swl{animation:a-fl .2s ease-out}
+#v-art .flagbox.swr{animation:a-fr .2s ease-out}
+#v-art .disp{padding:14px 16px}
+#v-art .dist{font-size:42px}
+#v-art .mil{font-size:84px}
+@media (max-height:700px){#v-art .disp{padding:12px 14px}#v-art .dist{font-size:36px}#v-art .mil{font-size:70px}}
+@media (max-height:600px){#v-art .disp{padding:10px 13px}#v-art .dist{font-size:32px}#v-art .mil{font-size:58px}}
 </style>
 </head>
 <body>
@@ -353,7 +389,9 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
 <!-- HOME -->
 <section class="view" id="v-home">
   <div class="brand">
-    <h1 class="hll">HLL</h1>
+    <svg class="emb" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="40" fill="none" stroke="#f2c40d" stroke-width="3"/><circle cx="50" cy="50" r="35" fill="none" stroke="#f2c40d" stroke-width="1" opacity=".45"/><polygon points="50.00,23.00 56.06,41.66 75.68,41.66 59.81,53.19 65.87,71.84 50.00,60.31 34.13,71.84 40.19,53.19 24.32,41.66 43.94,41.66" fill="#f2c40d"/></svg>
+    <h1 class="ttl">Hell Let Loose</h1>
+    <p class="tag">Call it in</p>
   </div>
   <div class="menu">
     <button class="big" id="b-art" type="button" data-go="art">
@@ -379,15 +417,12 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
 <section class="view raw" id="v-art">
 <div class="app">
   <div class="top">
-    <div class="hd" data-home="1" role="button" tabindex="0" aria-label="Back to home"><h1><span class="hllbox">HLL</span><span>Artillery</span></h1></div>
+    <div class="hd" data-home="1" role="button" tabindex="0" aria-label="Back to home"><h1><span class="flagbox" id="aflag" role="img" aria-label="Faction flag"></span><span>Artillery</span></h1></div>
   </div>
   <div class="row fac" id="fac"></div>
-  <div class="pgd" id="pgd"><i data-k="0"></i><i data-k="1"></i></div>
-  <div class="pages" id="pages"><div class="track" id="track">
-    <div class="pg"><section class="panel" id="p-stat"></section></div>
-    <div class="pg" id="p-shots"><div class="shint" id="shint"><i></i><span>Previous shot</span><i></i></div><div class="slist" id="slist"></div></div>
-  </div></div>
-  <button class="vbtn tlk" id="talk">TALK</button>
+  <section class="panel" id="p-stat"></section>
+  <div class="shots" id="p-shots"><div class="shint" id="shint"><i></i><span>Previous shot</span><i></i></div><div class="slist" id="slist"></div></div>
+  <div class="tz"><button class="vbtn tlk" id="talk">TALK</button></div>
 </div>
 </section>
 
@@ -658,16 +693,17 @@ function explode(d){   // d = ms to hold back the buzz and the bounce together; 
   if(d)fxT=setTimeout(fx,d);else fx();
 }
 const GUN={us:{n:"US/GER",f:m=>1001.525-0.237088*m},ru:{n:"USSR",f:m=>1141.375-0.213382*m},uk:{n:"UK",f:m=>551.125-0.177794*m}};
+const FLAGS={us:`<svg viewBox="0 0 200 100" aria-hidden="true"><defs><clipPath id="spa"><polygon points="0,0 200,0 0,100"/></clipPath><clipPath id="spb"><polygon points="200,0 200,100 0,100"/></clipPath></defs><g clip-path="url(#spa)"><g transform="scale(1.0526 1)"><rect width="190" height="100" fill="#fff"/><rect y="0.000" width="190" height="7.692" fill="#b22234"/><rect y="15.385" width="190" height="7.692" fill="#b22234"/><rect y="30.769" width="190" height="7.692" fill="#b22234"/><rect y="46.154" width="190" height="7.692" fill="#b22234"/><rect y="61.538" width="190" height="7.692" fill="#b22234"/><rect y="76.923" width="190" height="7.692" fill="#b22234"/><rect y="92.308" width="190" height="7.692" fill="#b22234"/><rect width="76" height="53.846" fill="#3c3b6e"/><defs><pattern id="usst" width="9.5" height="8.974" patternUnits="userSpaceOnUse"><polygon points="4.75,1.49 5.46,3.52 7.60,3.56 5.89,4.86 6.51,6.91 4.75,5.69 2.99,6.91 3.61,4.86 1.90,3.56 4.04,3.52" fill="#fff"/></pattern></defs><rect width="76" height="53.846" fill="url(#usst)"/></g></g><g clip-path="url(#spb)"><rect width="200" height="100" fill="#dd0000"/><circle cx="138" cy="68" r="29" fill="#fff"/><g transform="translate(138 68) rotate(45) scale(1.312)" stroke="#000" stroke-width="5" fill="none" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"><path d="M0 0V-10H10"/><path d="M0 0H10V10"/><path d="M0 0V10H-10"/><path d="M0 0H-10V-10"/></g></g><line x1="203" y1="-3" x2="-3" y2="103" stroke="#000" stroke-width="5"/></svg>`,ru:`<svg viewBox="0 0 200 100" aria-hidden="true"><rect width="200" height="100" fill="#cc0000"/><g fill="#ffd200" transform="translate(40 34) scale(1.35) translate(-40 -30)"><polygon points="40.00,6.00 42.12,12.09 48.56,12.22 43.42,16.11 45.29,22.28 40.00,18.60 34.71,22.28 36.58,16.11 31.44,12.22 37.88,12.09" fill="#cc0000" stroke="#ffd200" stroke-width="1.8" stroke-linejoin="miter"/><path d="M53 52 L30 25" stroke="#ffd200" stroke-width="3.6" fill="none" stroke-linecap="butt"/><rect x="-8.5" y="-3.6" width="17" height="7.2" transform="translate(30.5 24) rotate(-39)"/><path d="M27 52 L37 41" stroke="#ffd200" stroke-width="3.4" fill="none"/><path d="M36 42 Q62 44 56 22 Q50 34 36 42Z"/></g></svg>`,uk:`<svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="ukt"><path d="M30 15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" clip-path="url(#ukt)" stroke="#c8102e" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"/></svg>`};
 const SPA={us:{n:"US/USSR",f:m=>0.66647*m-33.588},ax:{n:"Axis",f:m=>0.88838*m-78.059},ch:{n:"Churchill",f:m=>1.04456*m-4.86},bi:{n:"Bishop",f:m=>0.19518*m+10.846}};
 
-const FLIGHT=24,SETTLE_MS=1000,FX_MS=1000; // shell flight time (s), wait before logging a 3-digit 1xx distance
+const FLIGHT=24,SETTLE_MS=1000,FX_MS=0; // shell flight time (s), wait before logging a 3-digit 1xx distance
 
 function tpl(cfg){
   const spa=!!cfg.spa;
   let h='<div class="disp'+(spa?' spa':'')+'">'
     +'<div class="kr"><div class="k">DISTANCE (M)</div><div class="arm" data-r="arm"><i></i>ARMED</div></div><div class="v dist'+(spa?' fld':'')+'" data-r="dist">---</div>'+(spa?'':'<div class="rm"><i data-r="rmf"></i></div>');
   if(spa)h+='<div class="k" style="margin-top:4px">TERRAIN ADJUST (MIL)</div><div class="adjrow"><div class="v adj fld" data-r="adj">+0</div><button class="chip sign" data-r="sign">+/&minus;</button></div>';
-  h+='<div class="k" style="margin-top:6px">ELEVATION (MIL)</div><div class="v mil" data-r="mil">---</div><button class="last" data-r="last" style="visibility:hidden" disabled>Last shot: ---</button></div><div class="pad" data-r="pad"></div>';
+  h+='<div class="k" style="margin-top:6px">ELEVATION (MIL)</div><div class="v mil" data-r="mil">---</div><button class="last" data-r="last" style="visibility:hidden" disabled>Last shot: ---</button></div>';
   if(cfg.hold){
     h+='<div class="row tools">';
     [-50,-10,10,50].forEach(n=>{h+='<button class="chip nud" data-n="'+n+'">'+(n<0?'&minus;'+(-n):'+'+n)+'</button>'});
@@ -692,14 +728,6 @@ function makeCalc(id,cfg){
     fac.appendChild(b);
   }
   let ck=null;
-  ["1","2","3","4","5","6","7","8","9","CLEAR","0",cfg.fireInPad?"FIRE":"DEL"].forEach(x=>{
-    const b=document.createElement("button");
-    b.className="key"+(x==="FIRE"?" fk":x==="CLEAR"?" sm":x==="DEL"?" dl":"");
-    b.textContent=x==="DEL"?"\u232B":x;
-    if(x==="FIRE")ck=b;
-    tapUp(b,()=>x==="CLEAR"?clear():x==="FIRE"?(spa&&act==="d"&&digits?(act="a",render()):fire()):x==="DEL"?back():press(x),x!=="CLEAR"&&x!=="DEL");
-    g("pad").appendChild(b);
-  });
   if(spa){
     tap(g("dist"),()=>{act="d";render()});
     tap(g("adj"),()=>{act="a";render()});
@@ -728,12 +756,11 @@ function makeCalc(id,cfg){
   function addSlot(){const r=makeRow();sbox.appendChild(r);return r}
   function fillSlots(){}   // page 2 stays blank until a shot is fired
   function placeShot(s){
-    const atTop=sbox.scrollTop<=2;                     // viewing the newest shot? then keep showing it, otherwise keep your place
     const row=makeRow(),t=row._t;
     row.className="sr";
     t[0].innerHTML=t[2].innerHTML="<b>"+s.mil+"</b><small>(mil)</small>";   // number, then (mil), on the left
     sbox.insertBefore(row,sbox.firstChild);
-    sbox.scrollTop=atTop?0:sbox.scrollTop+row.offsetHeight+8;
+    while(sbox.children.length>3)sbox.removeChild(sbox.lastChild);   // only the last three shots stay on screen
     s.t=t;s.ov=row._ov;s.row=row;
   }
   function renderShots(){
@@ -759,6 +786,17 @@ function makeCalc(id,cfg){
   addEventListener("load",fillSlots);
 
   g("last").onclick=()=>undo();
+  {const card=root.querySelector(".disp"),chip=document.getElementById("aflag");let sid=null,sx=0,sy=0;
+   card.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button>0)return;sid=e.pointerId;sx=e.clientX;sy=e.clientY});
+   card.addEventListener("pointerup",e=>{
+     if(e.pointerId!==sid)return;sid=null;
+     const dx=e.clientX-sx,dy=e.clientY-sy;
+     if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return;
+     const ks=Object.keys(P),n=(ks.indexOf(prof)+(dx<0?1:-1)+ks.length)%ks.length;
+     prof=ks[n];store("prof",prof);render();
+     chip.classList.remove("swl","swr");void chip.offsetWidth;chip.classList.add(dx<0?"swl":"swr");
+   });
+   card.addEventListener("pointercancel",()=>{sid=null});}
   const getF=()=>act==="a"?adjD:digits;
   const setF=v=>{if(act==="a")adjD=v;else digits=v};
   function press(c){
@@ -791,6 +829,7 @@ function makeCalc(id,cfg){
     return{d,mil,msg:spa?"":rng};
   }
   function render(){
+    {const fb=document.getElementById("aflag");if(fb&&fb.dataset.k!==prof){fb.dataset.k=prof;fb.innerHTML=FLAGS[prof]||""}}
     document.querySelectorAll("#fac .chip").forEach(c=>c.classList.toggle("on",c.dataset.k===prof));
     const r=calc();
     g("dist").textContent=r.d===null?"---":r.d;
@@ -849,13 +888,6 @@ function makeCalc(id,cfg){
 const CALC={stat:makeCalc("stat",{hist:true,note:true})};
 let cur="stat";
 $("p-stat").classList.add("show");
-document.addEventListener("keydown",e=>{
-  if(!$("v-art").classList.contains("show"))return;
-  const c=CALC[cur];
-  if(/^\d$/.test(e.key))c.press(e.key);
-  else if(e.key==="Backspace")c.back();
-  else if(e.key==="Enter")c.fire();
-});
 
 
 function vib(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
@@ -997,14 +1029,12 @@ function pressTalk(e){
   holding=true;txt="";verr="";fatal=false;tries=0;
   try{talk.setPointerCapture(e.pointerId)}catch(x){}
   talk.classList.add("on");
-  buzzStart();
   say("Listening...");
   begin();
 }
 function release(){
   if(!holding)return;
   holding=false;
-  buzzStop();
   if(busy){
     // short tail so the last word is not clipped, then let onend apply the answer
     const me=rec;
@@ -1017,49 +1047,6 @@ if(talk){
   talk.addEventListener("contextmenu",e=>e.preventDefault());
 }
 
-/* ---------- pages: only the area between the dots and TALK slides ---------- */
-const pagesEl=$("pages"),track=$("track"),pdot=document.querySelectorAll("#pgd i");
-let pgi=0;
-function paintDots(){pdot.forEach(d=>d.classList.toggle("on",+d.dataset.k===pgi))}
-function goPage(i){
-  pgi=Math.max(0,Math.min(1,i));
-  track.style.transition="";
-  track.style.transform="translateX("+(-pgi*50)+"%)";
-  paintDots();
-}
-paintDots();
-pdot.forEach(d=>d.addEventListener("click",()=>goPage(+d.dataset.k)));
-
-pagesEl.addEventListener("pointerdown",e=>{
-  if(e.pointerType==="mouse"&&e.button!==0)return;
-  if(G.id!==null){G.dead=true;return}            // a second finger (two-thumb typing) never starts a swipe
-  G.id=e.pointerId;G.x=e.clientX;G.y=e.clientY;G.t=e.timeStamp;G.swiping=false;G.dead=false;
-});
-pagesEl.addEventListener("pointermove",e=>{
-  if(e.pointerId!==G.id||G.dead)return;
-  const dx=e.clientX-G.x,dy=e.clientY-G.y;
-  if(!G.swiping){
-    if(Math.abs(dx)>14&&Math.abs(dx)>Math.abs(dy)*1.3){G.swiping=true;track.style.transition="none"}
-    else return;
-  }
-  const d=((pgi===0&&dx>0)||(pgi===1&&dx<0))?dx*0.3:dx;   // resist dragging past either end
-  track.style.transform="translateX(calc("+(-pgi*50)+"% + "+d+"px))";
-});
-function endGesture(e){
-  if(e.pointerId!==G.id)return;
-  const dx=e.clientX-G.x,v=dx/Math.max(1,e.timeStamp-G.t),was=G.swiping&&!G.dead,w=pagesEl.clientWidth;
-  G.id=null;
-  if(!was){G.swiping=false;return}
-  let to=pgi;
-  if(e.type==="pointerup"){
-    if(dx<-w*0.2||v<-0.5)to=1;
-    else if(dx>w*0.2||v>0.5)to=0;
-  }
-  goPage(to);
-  setTimeout(()=>{G.swiping=false},0);            // keys see the swipe flag first, then it clears
-}
-pagesEl.addEventListener("pointerup",endGesture);
-pagesEl.addEventListener("pointercancel",endGesture);
 window.HLL_ART={show:function(){try{CALC.stat.fill()}catch(e){}},hide:function(){try{release();stopSpeak()}catch(e){}}};
 
 }
@@ -1116,17 +1103,18 @@ CATS.forEach(c=>{
   const b=document.createElement("button");b.className="chip";
   b.innerHTML='<span></span><span class="bd"></span>';
   b.firstChild.textContent=c.n;
-  b.onclick=()=>{cat=c.k;sv("cat",cat);build()};
+  b.onclick=()=>goCat(c.k);
   $("cats").appendChild(b);CB[c.k]={b,bd:b.querySelector(".bd")};
 });
 
 /* tiles (only the current category is in the DOM; state lives in ends/cds) */
-let T={};
+let T={},PAGES=[],curPage=0,lock=false,lockT=0;   // PAGES: one entry per page, in swipe order
 function build(){
-  $("grid").textContent="";T={};
-  const c=CATS.find(x=>x.k===cat);
+  $("grid").textContent="";T={};PAGES=[];
+  CATS.forEach(c=>{
   const pages=[];c.items.forEach(a=>{const i=a.pg||0;(pages[i]=pages[i]||[]).push(a)});
-  pages.forEach(list=>{
+  pages.forEach((list,pi)=>{
+  PAGES.push({cat:c.k,i:pi});
   const pg=document.createElement("div");pg.className="pg";$("grid").appendChild(pg);
   const n=list.length,rows=Math.ceil(n/2);
   pg.style.gridTemplateRows=n%2?"repeat("+(rows-1)+",minmax(0,1fr)) minmax(0,.62fr)":"";
@@ -1155,25 +1143,53 @@ function build(){
     b.addEventListener("contextmenu",e=>e.preventDefault());
   });
   });
-  $("grid").scrollLeft=0;
-  buildDots(pages.length);
+  });
+  curPage=Math.max(0,PAGES.findIndex(p=>p.cat===cat));
+  buildDots();
   draw();
 }
-function buildDots(n){
+function buildDots(){
   const d=$("cdots");d.textContent="";
+  const base=PAGES.findIndex(p=>p.cat===cat),n=PAGES.filter(p=>p.cat===cat).length;
   if(n<2)return;
-  for(let i=0;i<n;i++){
+  for(let k=0;k<n;k++){
     const b=document.createElement("button");b.innerHTML="<i></i>";
-    b.onclick=()=>{$("grid").scrollTo({left:i*$("grid").clientWidth,behavior:"smooth"})};
+    b.onclick=()=>toPage(base+k);
     d.appendChild(b);
   }
   paintDots();
 }
 function paintDots(){
-  const g=$("grid"),w=g.clientWidth||1,i=Math.round(g.scrollLeft/(w+12));
-  [...$("cdots").querySelectorAll("i")].forEach((x,k)=>x.classList.toggle("on",k===i));
+  const k=PAGES[curPage]?PAGES[curPage].i:0;
+  [...$("cdots").querySelectorAll("i")].forEach((x,n)=>x.classList.toggle("on",n===k));
 }
-$("grid").addEventListener("scroll",paintDots,{passive:true});
+/* scroll to a page; while we drive the scroll ourselves the chips are not re-read from the scroll position */
+function toPage(i,instant){
+  const g=$("grid");
+  lock=true;clearTimeout(lockT);lockT=setTimeout(()=>{lock=false},instant?0:700);
+  g.scrollTo({left:i*(g.clientWidth+12),behavior:instant?"auto":"smooth"});
+}
+function goCat(k){
+  const first=PAGES.findIndex(p=>p.cat===k);
+  if(first<0)return;
+  curPage=first;
+  if(k!==cat){cat=k;sv("cat",cat);buildDots();draw()}
+  toPage(first);
+}
+/* the page in view decides the category: chips and dots follow the swipe */
+function onScroll(){
+  const g=$("grid"),w=g.clientWidth;if(!w)return;
+  const i=Math.max(0,Math.min(PAGES.length-1,Math.round(g.scrollLeft/(w+12))));
+  if(i===curPage)return;
+  curPage=i;
+  if(PAGES[i].cat!==cat){cat=PAGES[i].cat;sv("cat",cat);buildDots();draw()}
+  else paintDots();
+}
+$("grid").addEventListener("scroll",()=>{
+  if(lock){clearTimeout(lockT);lockT=setTimeout(()=>{lock=false;onScroll()},140);return}
+  onScroll();
+},{passive:true});
+window.addEventListener("resize",()=>{try{toPage(curPage,true)}catch(e){}});
 
 const was={},wasPre={};
 const chime=()=>{beep(784,110);setTimeout(()=>beep(1175,170),130)};
@@ -1194,11 +1210,9 @@ function draw(){
     const n=counts[c.k]||0;
     CB[c.k].bd.textContent=n;CB[c.k].bd.classList.toggle("show",n>0);
   });
-  const cur=CATS.find(x=>x.k===cat);let ready=0;
-  cur.items.forEach(a=>{
+  ALL.forEach(a=>{
     const t=T[a.id];if(!t)return;
     const r=rem(a),isR=r<=0;
-    if(isR)ready++;
     const elapsed=cds[a.id]-r,pre=!isR&&a.pre&&elapsed<a.pre,spawn=!isR&&a.pre&&elapsed>=a.pre&&(a.pt===undefined||elapsed<a.pre+a.pt),active=pre||spawn||(!isR&&a.du&&elapsed<a.du);
     t.b.classList.toggle("ready",isR);
     t.b.classList.toggle("cool",!isR);
@@ -1211,7 +1225,7 @@ function draw(){
 setInterval(draw,250);
 ALL.forEach(a=>{was[a.id]=rem(a)>0;wasPre[a.id]=!!isPreNow(a,rem(a))});
 build();
-window.HLL_CMD={show:function(){try{paintDots()}catch(e){}}};
+window.HLL_CMD={show:function(){try{toPage(curPage,true);paintDots()}catch(e){}}};
 
 })();
 </script>
