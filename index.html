@@ -1083,6 +1083,12 @@ window.HLL_ART={show:function(){try{CALC.stat.fill()}catch(e){}},hide:function()
 const $=id=>document.getElementById(id);
 /* Names, costs and cooldowns (seconds) as given from in-game info. cd = cooldown, du = effect duration, pre = lead time in seconds before the effect (pl = label while counting, pd = label after, pt = seconds to show pd, blank = rest of cooldown). Edit the numbers below if the game changes them. */
 const CATS=[
+ {k:"man",n:"MANPOWER",items:[
+  {id:"airhead",n:"ESTABLISH AIRHEAD",c:"400 MAN",cd:600,pre:90,pl:"SPAWN IN",pd:"SPAWN AVAILABLE"},
+  {id:"reinf",n:"REINFORCE",c:"200 MAN",cd:300,du:120},
+  {id:"gen",n:"GENERATE RESOURCE",c:"100 → 60",cd:300},
+  {id:"dism",n:"DISMANTLE GARRISON",c:"100 MAN",cd:300},
+  {id:"enc",n:"ENCOURAGE",c:"400 MAN",cd:600,du:300}]},
  {k:"mun",n:"MUNITIONS",items:[
   {id:"supply",n:"SUPPLY DROP",c:"50 MUN",cd:120,pre:50,pl:"LANDS IN",pd:"LANDED",pt:10},
   {id:"recon",n:"RECON PLANE",c:"150 MUN",cd:300},
@@ -1090,12 +1096,6 @@ const CATS=[
   {id:"bomb",n:"BOMBING / KATYUSHA",c:"300 MUN",cd:600,pre:30,pl:"HITS IN",pd:"IMPACT",pt:10},
   {id:"prec",n:"PRECISION STRIKE",c:"250 MUN",cd:1200},
   {id:"ammo",n:"AMMO DROP",c:"250 MUN",cd:300}]},
- {k:"man",n:"MANPOWER",items:[
-  {id:"airhead",n:"ESTABLISH AIRHEAD",c:"400 MAN",cd:600,pre:90,pl:"SPAWN IN",pd:"SPAWN AVAILABLE"},
-  {id:"reinf",n:"REINFORCE",c:"200 MAN",cd:300,du:120},
-  {id:"gen",n:"GENERATE RESOURCE",c:"100 → 60",cd:300},
-  {id:"dism",n:"DISMANTLE GARRISON",c:"100 MAN",cd:300},
-  {id:"enc",n:"ENCOURAGE",c:"400 MAN",cd:600,du:300}]},
  {k:"fuel",n:"FUEL",items:[
   {id:"stk",n:"SUPPLY TRUCK",c:"100 FUEL",cd:90,pg:0},
   {id:"ttk",n:"TRANSPORT TRUCK",c:"100 FUEL",cd:90,pg:0},
@@ -1110,8 +1110,8 @@ const ALL=[];CATS.forEach(c=>c.items.forEach(a=>{a.cat=c.k;ALL.push(a)}));
 const LS="hll.cmd2.";
 const ld=(k,d)=>{try{const v=localStorage.getItem(LS+k);return v===null?d:JSON.parse(v)}catch(e){return d}};
 const sv=(k,v)=>{try{localStorage.setItem(LS+k,JSON.stringify(v))}catch(e){}};
-let cds={},ends=ld("ends",{}),cat=ld("cat","mun");
-if(!CATS.some(c=>c.k===cat))cat="mun";
+let cds={},ends=ld("ends",{}),cat=ld("cat",CATS[0].k);
+if(!CATS.some(c=>c.k===cat))cat=CATS[0].k;
 ALL.forEach(a=>{cds[a.id]=a.cd});
 const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
 const rem=a=>Math.max(0,((ends[a.id]||0)-Date.now())/1000);
