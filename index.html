@@ -376,7 +376,7 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
 #v-art .lower{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:var(--lg)}
 #v-art .shots{flex:1 1 0;min-height:0}
 #v-art .slist{flex:1 1 0;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;touch-action:pan-y}
-#v-art .tz{flex:0 0 calc(50% - var(--tk));min-height:72px;max-height:280px}
+#v-art .tz{flex:0 0 calc((50% - var(--tk))*.75);min-height:54px;max-height:210px}   /* TALK is 3/4 of its former height */
 #v-art .app .tlk{top:0;bottom:0;height:auto;min-height:0;max-height:none}
 @media (max-height:700px){#v-art{--lg:6px;--tk:65px}}
 @media (max-height:600px){#v-art{--tk:58px}}
