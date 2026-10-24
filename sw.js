@@ -2,7 +2,7 @@
    App files are fetched network-first (revalidated, so GitHub Pages' 10-minute HTTP cache cannot hand back a stale copy)
    and fall back to the saved copy when offline or when the network takes longer than 4 s. Fonts are cache-first.
    Bump VERSION to force a clean cache. */
-const VERSION = "hll-v4";
+const VERSION = "hll-v5";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 const WAIT_MS = 4000;

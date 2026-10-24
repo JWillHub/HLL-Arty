@@ -910,49 +910,66 @@ document.addEventListener("visibilitychange",()=>{
 
 /* ---------- spoken distance parsing ---------- */
 /*PARSE-START*/
-const NW={zero:0,oh:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90};
-const HOM={won:1,to:2,too:2,for:4,fore:4,ate:8};
-function norm(t){return String(t).toLowerCase().replace(/(\d),(?=\d{3}(?!\d))/g,"$1").replace(/[-\u2010-\u2015]/g," ")}
+const NW={zero:0,oh:0,o:0,naught:0,nought:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,niner:9,fife:5,tree:3,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fourty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90};
+const HOM={won:1,wan:1,to:2,too:2,tu:2,free:3,for:4,fore:4,ate:8};   // sound-alikes the recogniser may write for a leading digit ("for fifty" = 450)
+function norm(t){return String(t).toLowerCase().replace(/(\d),(?=\d{3}(?!\d))/g,"$1").replace(/[-‐-―]/g," ")}
 function items(s,hom){
-  const out=[];
+  const out=[];let lead=true;          // sound-alike words only count before the number starts, never after it ("... to the left")
   for(const t of s.match(/\d+|[a-z]+/g)||[]){
-    if(/^\d+$/.test(t)){out.push({v:parseInt(t,10)});continue}
-    if(t==="hundred"){out.push({h:1});continue}
-    if(t==="thousand"){out.push({k:1});continue}
+    if(/^\d+$/.test(t)){
+      lead=false;
+      if(t.length>1&&t[0]==="0")for(const c of t)out.push({v:+c,g:c});   // "05" = oh five
+      else out.push({v:parseInt(t,10),g:t});
+      continue;
+    }
+    if(t==="hundred"||t==="hundreds"){lead=false;out.push({h:1});continue}
+    if(t==="thousand"||t==="grand"){lead=false;out.push({k:1});continue}
     let v=NW[t];
-    if(v===undefined&&hom)v=HOM[t];
-    if(v!==undefined)out.push({v,w:1});
+    if(v===undefined&&hom&&lead)v=HOM[t];
+    if(v!==undefined){lead=false;out.push({v,g:String(v),w:1})}
   }
   return out;
 }
-function combine(it){
-  if(!it.length)return null;
-  if(it.length===1&&it[0].v!==undefined)return it[0].v;
-  if(it.some(x=>x.h||x.k)){
-    let tot=0,c=0;
-    for(const x of it){
-      if(x.k){tot+=(c||1)*1000;c=0}
-      else if(x.h){c=(c||1)*100}
-      else c+=x.v;
+// number pieces -> digit strings; a tens word followed by a single digit is one piece ("fifty five" = 55)
+function groups(it){
+  const gs=[];
+  for(let i=0;i<it.length;i++){
+    const x=it[i];
+    if(x.v===undefined)continue;
+    if(x.w&&x.v>=20&&x.v<100&&x.v%10===0){
+      const y=it[i+1];
+      if(y&&y.v!==undefined&&y.v>=1&&y.v<=9&&(y.w||y.g.length===1)){gs.push(String(x.v+y.v));i++;continue}
     }
-    return tot+c;
+    gs.push(x.g);
   }
-  const vs=it.map(x=>x.v);
-  if(vs.every(v=>v<10))return parseInt(vs.join(""),10);
-  const big=it.find(x=>!x.w&&x.v>=100);
-  if(big)return big.v;
-  const a=vs[0],b=vs[1],sum=vs.reduce((p,c)=>p+c,0),rest=sum-a;
-  if(a<10&&b>=10&&b<100)return a*100+rest;
-  if(a>=10&&a<100&&b>=20&&b<100&&b%10===0)return a*100+rest;
-  return sum;
+  return gs;
+}
+const small=a=>{const g=groups(a);return g.length?parseInt(g.join(""),10):0};
+function combine(it){
+  if(!it.some(x=>x.v!==undefined||x.h||x.k))return null;
+  let n;
+  if(it.some(x=>x.h||x.k)){
+    // "[one] thousand [four] hundred [and] [fifty]", also "fourteen hundred fifty" and "a hundred"
+    let rest=it,tot=0;
+    const ki=rest.findIndex(x=>x.k);
+    if(ki>=0){const l=rest.slice(0,ki).filter(x=>x.v!==undefined);tot+=1000*(l.length?small(l):1);rest=rest.slice(ki+1)}
+    const hi=rest.findIndex(x=>x.h);
+    if(hi>=0){const l=rest.slice(0,hi).filter(x=>x.v!==undefined);tot+=100*(l.length?small(l):1);rest=rest.slice(hi+1)}
+    n=tot+small(rest);
+  }else n=parseInt(groups(it).join(""),10);   // spoken in pieces: "four fifty", "fourteen fifty", "eleven oh five", "one four five zero", "11:10"
+  return isFinite(n)?n:null;
 }
 function parseNum(t){
   const s=norm(t),ok=n=>n!==null&&n>=100&&n<=1600;
-  // strict pass first; fall back to digit homophones ("for fifty" = 450) only if that gives a usable range
-  const a=combine(items(s,false));
+  const strict=items(s,false),hom=items(s,true);
+  const a=combine(strict);
+  const used=hom.length!==strict.length||hom.some((x,i)=>x.v!==strict[i].v);
+  const b=used?combine(hom):null;                 // only when a sound-alike word was really read as a digit
+  if(ok(b))return b;                              // "for hundred" = 400 beats the bare "hundred" = 100
   if(ok(a))return a;
-  const b=combine(items(s,true));
-  return ok(b)?b:(a!==null?a:b);
+  const d=strict.find(x=>x.g&&/^\d+$/.test(x.g)&&x.v>=100&&x.v<=1600);   // last resort: a plain 100-1600 figure anywhere in the sentence
+  if(d)return d.v;
+  return a!==null?a:b;
 }
 /*PARSE-END*/
 
