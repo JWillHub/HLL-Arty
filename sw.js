@@ -1,7 +1,7 @@
 /* HLL service worker: offline app shell + runtime font caching.
    Same-origin files use stale-while-revalidate, so an update is fetched in the
    background and appears on the next launch. Bump VERSION to force a clean cache. */
-const VERSION = "hll-v2";
+const VERSION = "hll-v3";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 

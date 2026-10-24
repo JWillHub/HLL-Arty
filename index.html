@@ -369,6 +369,16 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
 @media (max-height:700px){#v-art{--rh:32px;--rg:5px}#v-art .app{gap:6px}#v-art .dist{font-size:30px}#v-art .mil{font-size:52px}#v-art .disp{padding:8px 13px}#v-art .fac .chip{height:36px}#v-art .hd{min-height:44px}#v-art .shint{height:24px}}
 @media (max-height:600px){#v-art{--rh:28px;--rg:4px}#v-art .mil{font-size:44px}#v-art .dist{font-size:26px}#v-art .sl{font-size:17px}#v-art .sl b{font-size:19px}#v-art .disp{padding:6px 12px}#v-art .hd{min-height:40px}#v-art h1{font-size:21px}}
 #v-art .tlk.on{box-shadow:0 0 0 2px rgba(255,216,74,.5),0 0 18px rgba(255,90,70,.45)}
+#v-art .tlk{touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* last-7 shot list: card above and TALK below stay put, only this area scrolls */
+#v-art{--lg:8px;--tk:75px}
+#v-art .lower{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:var(--lg)}
+#v-art .shots{flex:1 1 0;min-height:0}
+#v-art .slist{flex:1 1 0;min-height:0;height:auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;touch-action:pan-y}
+#v-art .tz{flex:0 0 calc(50% - var(--tk));min-height:72px;max-height:280px}
+#v-art .app .tlk{top:0;bottom:0;height:auto;min-height:0;max-height:none}
+@media (max-height:700px){#v-art{--lg:6px;--tk:65px}}
+@media (max-height:600px){#v-art{--tk:58px}}
 #v-art #fac{display:none}
 #v-art .flagbox{position:relative;display:inline-block;flex:0 0 auto;height:1.2em;border-radius:8px;overflow:hidden;line-height:0}
 #v-art .flagbox svg{display:block;height:100%;width:auto}
@@ -421,8 +431,10 @@ background-color:var(--panel);background-image:repeating-linear-gradient(135deg,
   </div>
   <div class="row fac" id="fac"></div>
   <section class="panel" id="p-stat"></section>
+  <div class="lower">
   <div class="shots" id="p-shots"><div class="shint" id="shint"><i></i><span>Previous shot</span><i></i></div><div class="slist" id="slist"></div></div>
   <div class="tz"><button class="vbtn tlk" id="talk">TALK</button></div>
+  </div>
 </div>
 </section>
 
@@ -682,7 +694,6 @@ function setOdo(el,n){
 let fxT=0;   // pending shot feedback (buzz + bounce)
 function explode(d){   // d = ms to hold back the buzz and the bounce together; the shot itself registers right away
   const fx=()=>{
-    vib(60);
     try{
       if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
       const k=document.querySelector(".panel.show .mil");if(!k)return;
@@ -759,8 +770,10 @@ function makeCalc(id,cfg){
     const row=makeRow(),t=row._t;
     row.className="sr";
     t[0].innerHTML=t[2].innerHTML="<b>"+s.mil+"</b><small>(mil)</small>";   // number, then (mil), on the left
+    const atTop=sbox.scrollTop<=2;                         // at the top: the newest shot stays in view; scrolled down: keep your place
     sbox.insertBefore(row,sbox.firstChild);
-    while(sbox.children.length>3)sbox.removeChild(sbox.lastChild);   // only the last three shots stay on screen
+    sbox.scrollTop=atTop?0:sbox.scrollTop+row.offsetHeight+parseFloat(getComputedStyle(sbox).rowGap||0);
+    while(sbox.children.length>7)sbox.removeChild(sbox.lastChild);   // the last seven shots are kept; the list scrolls
     s.t=t;s.ov=row._ov;s.row=row;
   }
   function renderShots(){
@@ -944,7 +957,7 @@ function parseNum(t){
 /*PARSE-END*/
 
 /* ---------- output: the elevation is always read aloud (mute the phone to silence it) ---------- */
-function say(t,err){if(err)vib([40,60,40])}   // no on-screen text: a double buzz means nothing usable was heard
+function say(t,err){}   // no on-screen text and no buzz: the lit TALK button is the only feedback
 function speak(t){
   try{
     if(!("speechSynthesis" in window))return;
@@ -966,7 +979,6 @@ function applyVoice(txt){
   const m=C.mil();
   if(m===null){say(n+" m - out of range (100\u20131600 m)",1);return}
   say(n+" m \u2192 "+m+" mil");
-  vib(25);
 }
 
 /* ---------- hold-to-talk ---------- */
@@ -974,12 +986,6 @@ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const talk=$("talk");
 let rec=null,busy=false,holding=false,txt="",verr="",fatal=false,tries=0,tail=0;
 
-let holdBuzz=0;
-function buzzStart(){   // continuous buzz while held; Chrome caps one vibration at 10 s, so renew it before it runs out
-  const go=()=>vib(10000);
-  clearInterval(holdBuzz);go();holdBuzz=setInterval(go,9000);
-}
-function buzzStop(){clearInterval(holdBuzz);holdBuzz=0;vib(0)}
 function begin(){
   const me=new SR();rec=me;busy=true;
   me.lang="en-US";me.continuous=false;me.interimResults=true;me.maxAlternatives=1;
@@ -1045,6 +1051,8 @@ if(talk){
   talk.addEventListener("pointerdown",pressTalk);
   ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>talk.addEventListener(ev,release));
   talk.addEventListener("contextmenu",e=>e.preventDefault());
+  talk.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});   // no native long-press gesture, so no system haptic
+  talk.addEventListener("selectstart",e=>e.preventDefault());
 }
 
 window.HLL_ART={show:function(){try{CALC.stat.fill()}catch(e){}},hide:function(){try{release();stopSpeak()}catch(e){}}};
